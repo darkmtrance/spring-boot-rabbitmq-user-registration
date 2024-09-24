@@ -43,3 +43,36 @@ Para asegurarte de que los datos persistan incluso si el contenedor se reinicia,
 ```bash
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 -v /path/to/data:/var/lib/rabbitmq rabbitmq:4.0.2-management-alpine
 ```
+
+## Paso 5: Configuración del Clúster (Opcional)
+Si deseas configurar un clúster de RabbitMQ, sigue estos pasos:
+Crear una red Docker:
+```bash
+docker network create rabbitmq_cluster
+```
+
+Iniciar instancias de RabbitMQ en la red:
+```bash
+docker run -d --name rabbitmq1 --hostname rabbitmq1 -e RABBITMQ_ERLANG_COOKIE='rabbitcookie' --network rabbitmq_cluster rabbitmq:4.0.2-management-alpine
+docker run -d --name rabbitmq2 --hostname rabbitmq2 -e RABBITMQ_ERLANG_COOKIE='rabbitcookie' --network rabbitmq_cluster rabbitmq:4.0.2-management-alpine
+```
+
+Agrupar los nodos:
+Accede al shell de uno de los contenedores:
+```bash
+docker exec -it rabbitmq1 bash
+```
+
+Luego, ejecuta los siguientes comandos para agrupar los nodos:
+```bash
+rabbitmqctl stop_app
+rabbitmqctl reset
+rabbitmqctl join_cluster rabbit@rabbitmq2
+rabbitmqctl start_app
+```
+
+Verificar el estado del clúster:
+Ejecuta el siguiente comando en uno de los nodos para verificar el estado del clúster:
+```bash
+rabbitmqctl cluster_status
+```
