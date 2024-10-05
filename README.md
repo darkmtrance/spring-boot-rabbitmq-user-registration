@@ -54,7 +54,7 @@ docker network create rabbitmq_cluster
 Iniciar instancias de RabbitMQ en la red:
 ```bash
 
-docker run -d --name rabbitmq1 --hostname rabbitmq1 -e RABBITMQ_ERLANG_COOKIE='rabbitcookie' --network rabbitmq_cluster rabbitmq:4.0.2-management-alpine
+docker run -d --name rabbitmq1 --hostname rabbitmq1 -p 15672:15672 -e RABBITMQ_ERLANG_COOKIE='rabbitcookie' --network rabbitmq_cluster rabbitmq:4.0.2-management-alpine
 docker run -d --name rabbitmq2 --hostname rabbitmq2 -e RABBITMQ_ERLANG_COOKIE='rabbitcookie' --network rabbitmq_cluster rabbitmq:4.0.2-management-alpine
 
 ```
